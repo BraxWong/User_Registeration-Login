@@ -4,6 +4,8 @@
 #include <cstring>
 #include <limits>
 #include <bits/stdc++.h>
+#include <ctype.h>
+#include <stdio.h>
 using namespace std;
 #define COL_WIDTH 1000000
 //A function to save all all the data from the file before it gets erased
@@ -30,6 +32,27 @@ bool string_leng(string str) {
     }
     return false;
 }
+
+bool passwordSecurityCheck(string str)
+{
+  bool upperCase = false, lowerCase = false, specialChar = false;
+  if(str.length() < 8)
+    return false;
+  for(char s:str)
+  {
+    if(isupper(s))
+      upperCase = true;
+    else if(islower(s))
+      lowerCase = true;
+    else if(!isalnum(s))
+      specialChar = true;
+
+    if(upperCase && lowerCase && specialChar)
+        return true;
+  }
+  return false;
+}
+
 int main() {
     //The names of the file Username.txt and Password.txt
     string username_file = "Username.txt",password_file = "Password.txt",username,password;
