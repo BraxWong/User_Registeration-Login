@@ -8,32 +8,35 @@
 #include <stdio.h>
 using namespace std;
 #define COL_WIDTH 1000000
-//A function to save all all the data from the file before it gets erased
+
+//@savingFile()
+//@Param: string str, char* line
+//@Descriptions: It will create an ifstream object with the string as the 
+//               file name. If the file is not within the project path,
+//               the function will terminate. Else it will start reading the
+//               data within the file and store it in line. After it has reached
+//               the end of the file, the ifstream object will be closed
 void savingFile(string str, char* line){
-    //Creating an ifstream object with the string as the file name
     ifstream object(str);
-    //If the file does not exist, exit the program
     if(!object){
         cout << "The file does not exist. Please create a Login_Details.txt file\n";
         return;
     }
     //
-    //Start a loop to store the data to line, stops when it is the end of the file
     while(!object.eof()){
         object.getline(line,COL_WIDTH);
     }
-    //Close the file 
     object.close();
 }
-//Check if the username or password is strong enough
-bool string_leng(string str) {
-    if(str.length() >= 8){
-        return true;
-    }
-    return false;
-}
 
-bool passwordSecurityCheck(string str)
+//@userLoginDetailStrength()
+//@Param: string str
+//@Descriptions: It will check if the argument being passed in is strong enough
+//               If the argument's length is 8 or longer, and consists of 
+//               lower case, upper case, and special character. It will return 
+//               true. Else it will return false
+//@Return: true -> All the criterias have been fulfilled. false -> otherwise 
+bool userLoginDetailStrength(string str)
 {
   bool upperCase = false, lowerCase = false, specialChar = false;
   if(str.length() < 8)
@@ -53,6 +56,8 @@ bool passwordSecurityCheck(string str)
   return false;
 }
 
+//TODO: The main() function is way too lengthy, should be shrink down by creating multiple functions that will be called
+//      to do the job instead.
 int main() {
     //The names of the file Username.txt and Password.txt
     string username_file = "Username.txt",password_file = "Password.txt",username,password;
@@ -85,7 +90,7 @@ int main() {
                 getline(cin,username);
                 cout << "Please enter your password(8 characters or longer):";
                 getline(cin,password);
-                if(!string_leng(username) || !string_leng(password)){
+                if(!userLoginDetailStrength(username) || !userLoginDetailStrength(password)){
                     cout << "Either your username or the password is not 8 characters or longer. Please try again.\n";
                 }
                 else {
