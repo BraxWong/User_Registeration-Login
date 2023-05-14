@@ -6,6 +6,7 @@
 #include <bits/stdc++.h>
 #include <ctype.h>
 #include <stdio.h>
+#include "File_Library/file.cpp"
 using namespace std;
 #define COL_WIDTH 1000000
 
@@ -59,16 +60,18 @@ bool userLoginDetailStrength(string str)
 //@createNewUser()
 //@Param: string& username_file, string& password_file, string& username, string& password, char[] input_line, char[] password_line
 //@Descriptions: It will create a new user 
-void createNewUser(string& username_file, string& password_file, string& username, string& password, char[] input_line, char[] password_line)
+void createNewUser(string& username_file, string& password_file, string& tips_file, string& username, string& password, string& tips, char* input_line, char* password_line, char* tips_line)
 {
     savingFile(username_file,input_line);
     savingFile(password_file,password_line);
+    savingFile(tips_file,tips_line);
     //Start a while loop just in case the password and username are not strong enough
     while(true){
     //Username.txt and Password.txt will now be wiped clean 
     ofstream fout(username_file);
     ofstream fout2(password_file);
-    if(!fout || !fout2){
+    ofstream fout3(tips_file);
+    if(!fout || !fout2 || !fout3){
         cout << "The file does not exist. Please create a Login_Details.txt file\n";
         exit(-1);
     }
@@ -76,9 +79,12 @@ void createNewUser(string& username_file, string& password_file, string& usernam
     cin.clear();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     //Asking for username and password
-    cout << "Please enter your username(8 characters or longer):";
+    cout << "Please enter your username(8 characters or longer):\n";
     getline(cin,username);
+    cout << "Please enter your password(8 characters or longer):\n";
     getline(cin,password);
+    cout << "Please enter your forget password tips:\n";
+    getline(cin,tips);
     if(!userLoginDetailStrength(username) || !userLoginDetailStrength(password)){
         cout << "Either your username or the password is not 8 characters or longer. Please try again.\n";
     }
@@ -86,6 +92,7 @@ void createNewUser(string& username_file, string& password_file, string& usernam
         //Password and Username are strong enough, inputting previous usernames and passwords into the files first
         fout << input_line << " ";
         fout2 << password_line << " ";
+
         //Inputting newly created username and password to the file
         fout << username;
         fout2 << password;
@@ -97,10 +104,40 @@ void createNewUser(string& username_file, string& password_file, string& usernam
     }
 }
 
+string forgotPassword()
+{
+  string username;
+  cout << "Please provide your username:\n";
+  getline(cin,username);
+  if(!file::find_word("username_file",".txt",username))
+  {
+    while(true)
+      char newAC;
+      cout << "The username is not found. Would you like to create a new account?(Y/N)\n";
+      cin >> newAC;
+      if(newAC == "Y" || newAC == "y")
+      {
+        string username, password, tips;
+        char[] input_line, password_line, tips_line;
+        createNewUser("Username.txt","Password.txt","Tips.txt", username, password, tips, input_line,password_line,tips_line);
+        break;
+      }
+      else 
+      {
+        cout << "System exiting\n";
+        break;
+        exit(-2);
+      }
+  }
+  else 
+  {
+
+  }
+}
 //@userLogin()
 //@Param: string& username_file, string& password_file, string& username, string& password, char[] input_line, char[] password_line
 //@Descriptions: Allows users to log into the system. It will check if the input is accurate as well.
-void userLogin(string& username_file, string& password_file, string& username, string& password, char[] input_line, char[] password_line)
+void userLogin(string& username_file, string& password_file, string& username, string& password, char* input_line, char* password_line)
 {
     while(true){
     //Since the corresponding username and password have the same index, we can use a counter to see if the username and password matches
@@ -164,9 +201,9 @@ void userLogin(string& username_file, string& password_file, string& username, s
 //      to do the job instead.
 int main() {
     //The names of the file Username.txt and Password.txt
-    string username_file = "Username.txt",password_file = "Password.txt",username,password;
+    string username_file = "Username.txt",password_file = "Password.txt", tips_file = "Tips.txt", username,password,tips;
     //to store existing data from the files
-    char input_line[COL_WIDTH+1],password_line[COL_WIDTH+1];
+    char input_line[COL_WIDTH+1],password_line[COL_WIDTH+1],tips_line[COL_WIDTH+1];
     int num;
     cout << "Welcome to User Registeration & Login (Version 1.0.0) Brax's Production\n";
     while(true){
@@ -174,7 +211,7 @@ int main() {
         cout << "Press 1: New User Registeration\nPress 2: User Login\nPress 3: Forgot Password\n";
         cin >> num;
         if(num == 1){
-          createNewUser(username_file, password_file, username, password, input_line, password_line);
+          createNewUser(username_file, password_file, tips_file, username, password,tips, input_line, password_line, tips_line);
           break;
         }   
         else if(num == 2){
